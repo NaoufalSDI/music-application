@@ -9,27 +9,57 @@
     android:background="@drawable/background_couleur"
     tools:context=".Activities.BrowsingSongsActivity">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/main_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        android:paddingBottom="10dp">
 
-        <TextView
-            android:layout_width="wrap_content"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/main_toolbar"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Browse Songs"
-            android:textSize="30sp"
-            android:textColor="@color/white"
-            android:layout_marginTop="20dp"
-            android:fontFamily="@font/nunito_extrabold"
-            android:textStyle="bold"
-            android:layout_marginStart="30dp"/>
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="@drawable/shadow_top">
 
-    </androidx.appcompat.widget.Toolbar>
+            <TextView
+                android:id="@+id/browse_songs"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Browse Songs"
+                android:textSize="30sp"
+                android:textColor="@color/white"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/nunito_extrabold"
+                android:textStyle="bold"
+                android:layout_marginStart="30dp"
+                android:layout_marginBottom="10dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/search_song"
+                />
+            <EditText
+                android:id="@+id/search_song"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rounded_input_conrners"
+                android:hint="Search by Song or Artist"
+                android:textColorHint="#858585"
+                android:textColor="#858585"
+                android:textCursorDrawable="@drawable/costum_cursor"
+                android:imeOptions="actionSearch"
+                android:inputType="text"
+                android:fontFamily="@font/musicfont"
+                android:textSize="20sp"
+                android:paddingHorizontal="20dp"
+                android:paddingVertical="10dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginHorizontal="15dp"
+                android:layout_marginTop="10dp"
+                app:layout_constraintTop_toBottomOf="@id/browse_songs"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
     <androidx.recyclerview.widget.RecyclerView
+        android:background="@drawable/shadow_bottom"
         android:id="@+id/browse_recyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"

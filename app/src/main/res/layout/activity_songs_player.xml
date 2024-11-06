@@ -82,7 +82,9 @@
             android:layout_height="wrap_content"
             android:text="The singer"
             android:textColor="#EBBDBDBD"
+            android:textSize="13sp"
             android:gravity="center"
+            android:textStyle="bold"
             android:fontFamily="@font/nunito_medium"/>
     </LinearLayout>
 

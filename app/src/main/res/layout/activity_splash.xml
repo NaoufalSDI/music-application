@@ -10,9 +10,9 @@
 
     <ImageView
         android:id="@+id/splash_image"
-        android:layout_width="110dp"
-        android:layout_height="110dp"
-        android:src="@drawable/app_icon"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:src="@drawable/music_logo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/madeby"
@@ -23,13 +23,13 @@
         android:id="@+id/madeby"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="From NewFull"
+        android:text="Made By NewFull"
         android:textColor="@color/white"
         android:textStyle="bold"
-        android:textSize="15sp"
+        android:textSize="17sp"
         android:fontFamily="@font/musicfont"
         android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="50dp"/>
+        android:layout_marginBottom="90dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,6 +1,8 @@
 package com.example.musicano.Activities
 
 
+import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.content.pm.ActivityInfo
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -69,6 +71,8 @@ class SongsPlayerActivity : AppCompatActivity() {
         // Retrieve song data from Intent
         currentSongIndex = intent.getIntExtra("SONG_INDEX", 0)
         songsList = intent.getParcelableArrayListExtra("SONGS_LIST") ?: listOf()
+
+        var colorAnimation: ValueAnimator? = null
 
         // Initialize media player if a song URL is provided
         if (songsList.isNotEmpty()) {
@@ -214,7 +218,7 @@ class SongsPlayerActivity : AppCompatActivity() {
             .load(imageUrl)
             .apply(RequestOptions().fitCenter())
             .transform(CenterCrop(), RoundedCorners(30))
-            .into(findViewById<ImageView>(R.id.player_image))
+            .into(findViewById(R.id.player_image))
 
         Glide.with(this)
             .asBitmap()
@@ -321,6 +325,7 @@ class SongsPlayerActivity : AppCompatActivity() {
         handler.removeCallbacksAndMessages(null) // Stop updating the seek bar
     }
 
+    @SuppressLint("DefaultLocale")
     private fun formatDuration(milliseconds: Int): String {
         val seconds = (milliseconds / 1000) % 60
         val minutes = (milliseconds / (1000 * 60)) % 60
