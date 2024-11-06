@@ -25,7 +25,7 @@ class SongAdapter(private val songs: List<Song>) : RecyclerView.Adapter<SongAdap
             title.text = song.title
             artist.text = song.artist.name
             Glide.with(itemView.context)
-                .load(song.album.coverUrl)
+                .load(song.album.coverBigUrl)
                 .transform(CenterCrop(), RoundedCorners(25))
                 .into(imageView)
 

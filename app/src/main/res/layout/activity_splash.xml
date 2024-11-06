@@ -27,7 +27,7 @@
         android:textColor="@color/white"
         android:textStyle="bold"
         android:textSize="15sp"
-        android:fontFamily="@font/musicaltone"
+        android:fontFamily="@font/musicfont"
         android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="50dp"/>

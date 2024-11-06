@@ -5,14 +5,17 @@ import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 
 data class Album(
-    @SerializedName("cover") val coverUrl: String
+    @SerializedName("cover") val coverUrl: String,
+    @SerializedName("cover_xl") val coverBigUrl: String
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
+        parcel.readString() ?: "",
         parcel.readString() ?: ""
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(coverUrl)
+        parcel.writeString(coverBigUrl)
     }
 
     override fun describeContents(): Int {

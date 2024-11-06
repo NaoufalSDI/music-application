@@ -1,6 +1,12 @@
 package com.example.musicano.Activities
 
+
 import android.content.pm.ActivityInfo
+import android.graphics.Bitmap
+import android.graphics.Color
+import android.graphics.PorterDuff
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
 import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
@@ -14,9 +20,13 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.palette.graphics.Palette
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.example.musicano.Models.Song
 import com.example.musicano.R
 
@@ -31,6 +41,7 @@ class SongsPlayerActivity : AppCompatActivity() {
     private lateinit var durationTextView: TextView
     private lateinit var seekBar: SeekBar
     private lateinit var backArrow: ImageView // Back arrow
+    private lateinit var mainLayout: View
 
     private var isPlaying = false
     private var currentSongIndex = 0
@@ -65,7 +76,7 @@ class SongsPlayerActivity : AppCompatActivity() {
             initializeMediaPlayer(song.previewUrl)
 
             // Update song UI with the initial song details
-            updateSongUI(song.title, song.artist.name, song.album.coverUrl)
+            updateSongUI(song.title, song.artist.name, song.album.coverBigUrl)
         }
 
         // Initialize UI components
@@ -80,8 +91,8 @@ class SongsPlayerActivity : AppCompatActivity() {
     private fun makeSystemBarsTransparent() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             window.setDecorFitsSystemWindows(false)
-            window.statusBarColor = android.graphics.Color.TRANSPARENT
-            window.navigationBarColor = android.graphics.Color.TRANSPARENT
+            window.statusBarColor = Color.TRANSPARENT
+            window.navigationBarColor = Color.TRANSPARENT
         } else {
             @Suppress("DEPRECATION")
             window.decorView.systemUiVisibility = (
@@ -91,12 +102,13 @@ class SongsPlayerActivity : AppCompatActivity() {
                             or View.SYSTEM_UI_FLAG_FULLSCREEN
                             or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                             or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
-            window.statusBarColor = android.graphics.Color.TRANSPARENT
-            window.navigationBarColor = android.graphics.Color.TRANSPARENT
+            window.statusBarColor = Color.TRANSPARENT
+            window.navigationBarColor = Color.TRANSPARENT
         }
     }
 
     private fun initializeUIComponents() {
+        mainLayout = findViewById(R.id.main)
         backArrow = findViewById(R.id.back_arrow)
         playButton = findViewById(R.id.play_button)
         playAgainButton = findViewById(R.id.replay_button)
@@ -185,7 +197,7 @@ class SongsPlayerActivity : AppCompatActivity() {
         }
         currentSongIndex = songsList.indexOf(song) // Update current song index
         initializeMediaPlayer(song.previewUrl)
-        updateSongUI(song.title, song.artist.name, song.album.coverUrl)
+        updateSongUI(song.title, song.artist.name, song.album.coverBigUrl)
 
         // Update play button
         playButton.setImageResource(R.drawable.pause) // Update to show pause
@@ -195,10 +207,63 @@ class SongsPlayerActivity : AppCompatActivity() {
     private fun updateSongUI(title: String?, artist: String?, imageUrl: String?) {
         findViewById<TextView>(R.id.player_song_artist).text = artist
         findViewById<TextView>(R.id.player_song_title).text = title
+
+        // Load the image and set the background color based on the dominant color
         Glide.with(this)
+            .asBitmap() // Load the image as a bitmap
             .load(imageUrl)
-            .transform(CenterCrop(), RoundedCorners(25))
-            .into(findViewById(R.id.player_image))
+            .apply(RequestOptions().fitCenter())
+            .transform(CenterCrop(), RoundedCorners(30))
+            .into(findViewById<ImageView>(R.id.player_image))
+
+        Glide.with(this)
+            .asBitmap()
+            .load(imageUrl)
+            .into(object : CustomTarget<Bitmap>() {
+                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                    Palette.from(resource).generate { palette ->
+                        // Get the dominant color
+                        palette?.dominantSwatch?.let {
+                            val dominantColor = it.rgb
+                            val brightness = calculateBrightness(dominantColor)
+
+                            // Apply text and icon color based on brightness
+                            if (brightness > 128) {
+                                findViewById<TextView>(R.id.player_song_artist).setTextColor(Color.BLACK)
+                                findViewById<TextView>(R.id.player_song_title).setTextColor(Color.BLACK)
+                                findViewById<TextView>(R.id.playing_now).setTextColor(Color.BLACK)
+                                backArrow.setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_IN)
+                            } else {
+                                findViewById<TextView>(R.id.player_song_artist).setTextColor(Color.WHITE)
+                                findViewById<TextView>(R.id.player_song_title).setTextColor(Color.parseColor("#f1f1f1"))
+                                findViewById<TextView>(R.id.playing_now).setTextColor(Color.WHITE)
+                                backArrow.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN)
+                            }
+
+                            val gradientDrawable = GradientDrawable(
+                                GradientDrawable.Orientation.TOP_BOTTOM,
+                                intArrayOf(dominantColor, Color.BLACK)
+                            )
+
+                            mainLayout.background = gradientDrawable
+                        }
+                    }
+                }
+
+                override fun onLoadCleared(placeholder: Drawable?) {
+                    mainLayout.setBackgroundColor(resources.getColor(android.R.color.white))
+                }
+            })
+    }
+
+    // Helper function to calculate brightness of a color
+    private fun calculateBrightness(color: Int): Int {
+        val red = Color.red(color)
+        val green = Color.green(color)
+        val blue = Color.blue(color)
+
+        // Using the luminance formula to calculate brightness
+        return (red * 299 + green * 587 + blue * 114) / 1000
     }
 
     private fun playNextSong() {

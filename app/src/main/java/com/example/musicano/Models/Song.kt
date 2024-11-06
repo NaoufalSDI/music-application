@@ -13,7 +13,7 @@ data class Song(
     constructor(parcel: Parcel) : this(
         parcel.readString() ?: "",
         parcel.readString() ?: "",
-        parcel.readParcelable(Album::class.java.classLoader) ?: Album(""),
+        parcel.readParcelable(Album::class.java.classLoader) ?: Album("", ""),
         parcel.readParcelable(Artist::class.java.classLoader) ?: Artist("")
     )
 
